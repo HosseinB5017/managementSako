@@ -1,0 +1,12 @@
+[
+  {
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.TajanTeam.Tajan",
+      "sha256_cert_fingerprints": [
+        "2B:F6:51:A9:F3:60:17:3C:B2:97:83:BE:7F:E0:BF:84:7A:3E:6C:A9:D8:6D:B2:0F:59:37:79:98:33:95:A9:92"
+      ]
+    }
+  }
+]

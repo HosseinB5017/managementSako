@@ -1,0 +1,89 @@
+{
+	"name": "تجن - مدیریت پسماند و بازیافت",
+	"short_name": "تجن",
+	"description": "اپلیکیشن هوشمند جمع‌آوری و بازیافت پسماند با امکان درخواست آنلاین، پیگیری و برداشت وجه",
+	"lang": "fa",
+	"dir": "rtl",
+	"icons": [
+		{
+			"src": "/icon/web/icon-192.png",
+			"type": "image/png",
+			"sizes": "192x192"
+		},
+		{
+			"src": "/icon/web/icon-512.png",
+			"type": "image/png",
+			"sizes": "512x512"
+		},
+		{
+			"src": "/icon/web/icon-192-maskable.png",
+			"type": "image/png",
+			"sizes": "192x192",
+			"purpose": "maskable"
+		},
+		{
+			"src": "/icon/web/icon-512-maskable.png",
+			"type": "image/png",
+			"sizes": "512x512",
+			"purpose": "maskable"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "/images/screenshot-wide.png",
+			"type": "image/png",
+			"sizes": "1280x720",
+			"form_factor": "wide"
+		},
+		{
+			"src": "/images/screenshot-mobile.png",
+			"type": "image/png",
+			"sizes": "750x1334",
+			"form_factor": "narrow"
+		}
+	],
+	"shortcuts": [
+		{
+			"name": "درخواست جمع‌آوری",
+			"short_name": "جمع‌آوری",
+			"description": "درخواست جدید جمع‌آوری پسماند",
+			"url": "/collection?source=shortcut",
+			"icons": [
+				{
+					"src": "/icon/web/icon-192.png",
+					"sizes": "192x192"
+				}
+			]
+		},
+		{
+			"name": "تاریخچه",
+			"short_name": "تاریخچه",
+			"description": "مشاهده تاریخچه جمع‌آوری",
+			"url": "/collection-history?source=shortcut",
+			"icons": [
+				{
+					"src": "/icon/web/icon-192.png",
+					"sizes": "192x192"
+				}
+			]
+		},
+		{
+			"name": "برداشت وجه",
+			"short_name": "برداشت",
+			"description": "درخواست برداشت وجه",
+			"url": "/withdrawal?source=shortcut",
+			"icons": [
+				{
+					"src": "/icon/web/icon-192.png",
+					"sizes": "192x192"
+				}
+			]
+		}
+	],
+	"start_url": "/",
+	"orientation": "portrait",
+	"display": "standalone",
+	"scope": "/",
+	"theme_color": "#22c55e",
+	"background_color": "#f9fafb"
+}

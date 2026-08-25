@@ -1,0 +1,45 @@
+{
+	"name": "next-pwa-template",
+	"version": "0.0.0",
+	"license": "MIT",
+	"scripts": {
+		"dev": "next dev",
+		"build": "next build",
+		"start": "next start",
+		"lint": "next lint"
+	},
+	"dependencies": {
+		"axios": "^1.12.2",
+		"lucide-react": "^0.542.0",
+		"next": "14.1.1",
+		"next-pwa": "^5.6.0",
+		"next-themes": "^0.2.1",
+		"pnpm": "^10.15.1",
+		"react": "18.2.0",
+		"react-dom": "18.2.0",
+		"react-icons": "^5.5.0",
+		"react-markdown": "^10.1.0",
+		"swr": "^2.3.6"
+	},
+	"devDependencies": {
+		"@tailwindcss/postcss": "^4.1.13",
+		"@types/node": "^20.8.4",
+		"@types/react": "^18.2.28",
+		"autoprefixer": "^10.4.16",
+		"eslint": "^8.51.0",
+		"eslint-config-next": "^13.5.4",
+		"eslint-config-prettier": "^9.0.0",
+		"postcss": "^8.5.6",
+		"prettier": "^3.0.3",
+		"prettier-plugin-tailwindcss": "^0.5.5",
+		"tailwindcss": "^4.1.13",
+		"tailwindcss-safe-area": "^1.1.0",
+		"typescript": "^5.2.2"
+	},
+	"prettier": {
+		"semi": false,
+		"singleQuote": true,
+		"jsxSingleQuote": true,
+		"useTabs": true
+	}
+}

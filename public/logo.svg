@@ -1,0 +1,26 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <g transform="translate(0, 10)">
+    <!-- Big Left Leaf -->
+    <path fill="#409B0E" d="M 222 178 C 150 120 140 60 216 80 C 242 120 246 158 222 178 Z" />
+    <path stroke="#FFFFFF" stroke-width="4.5" stroke-linecap="round" fill="none" d="M 218 172 Q 192 132 182 98" />
+
+    <!-- Small Right Leaf -->
+    <path fill="#409B0E" d="M 238 174 C 218 126 232 94 266 102 C 276 132 262 162 238 174 Z" />
+    <path stroke="#FFFFFF" stroke-width="3.5" stroke-linecap="round" fill="none" d="M 240 170 Q 248 142 256 116" />
+
+    <!-- Main T Shape -->
+    <path fill="#409B0E" d="
+      M 178 228
+      C 210 200 250 184 340 180
+      C 348 180 354 184 354 192
+      C 354 200 348 206 338 207
+      C 295 210 282 216 276 230
+      L 242 315
+      C 236 330 228 334 218 334
+      C 208 334 204 324 208 312
+      L 240 236
+      C 246 222 234 218 206 222
+      C 192 224 182 226 178 228 Z
+    " />
+  </g>
+</svg>
