@@ -55,6 +55,7 @@ export interface Company {
 	type: CompanyType
 	isActive: boolean
 	description?: string
+	invoiceDiscountPercentage?: number
 	contacts: CompanyContact[]
 	contracts: Contract[]
 	totalBalance: number // بدهی مثبت = بدهکار، منفی = بستانکار
@@ -133,6 +134,7 @@ export interface SiteVisit {
 
 // ==================== کالا و انبار ====================
 export type ProductStorageType = 'normal' | 'dangerous' | 'valuable' | 'refrigerated'
+export type ProductHazardNature = 'normal' | 'dangerous' | 'heavy' | 'valuable'
 
 // هر دستگاه خودروی کالا به عنوان یک آیتم دارای شماره شاسی یونیک
 export interface VehicleCargoItem {
@@ -169,12 +171,14 @@ export interface Product {
 	name: string
 	categoryId: string
 	categoryName: string
-	companyId: string
-	companyName: string
+	companyId?: string
+	companyName?: string
 	unit: 'ton' | 'kg' | 'pallet' | 'box' | 'carton' | 'number' | 'device'
 	unitWeightKg?: number
 	storageType: ProductStorageType
+	hazardNature?: ProductHazardNature // نوع ماهیت: عادی | خطرناک (ADR) | سنگین / ترافیکی | باارزش
 	isDangerous: boolean
+	isHeavy?: boolean
 	isValuable: boolean
 	estimatedValueRial?: number
 	vehicleSpecs?: VehicleProductSpecs // اگر دسته بندی ماشین باشد
@@ -297,6 +301,28 @@ export interface SiteOperation {
 // ==================== خدمات و تعرفه‌گذاری ====================
 export type ServiceUnit = 'fixed' | 'per_operation' | 'per_hour' | 'per_day' | 'per_ton' | 'per_wagon' | 'per_vehicle'
 
+export type TariffUnit = 'per_ton' | 'per_operation' | 'fixed' | 'per_hour' | 'per_vehicle' | 'per_day'
+
+export type TariffCategory = 'loading' | 'unloading' | 'transshipment' | 'storage' | 'weighing' | 'inspection' | 'ancillary'
+
+export type CargoType = 'normal' | 'heavy' | 'dangerous'
+
+export interface TariffPrices {
+	normal: number
+	heavy: number
+	dangerous: number
+}
+
+export interface CustomTariff {
+	id: string
+	name: string
+	prices: TariffPrices
+	unit: TariffUnit
+	category: TariffCategory
+	isActive: boolean
+	createdAt: string
+}
+
 export interface SystemService {
 	id: string
 	code: string
@@ -305,6 +331,7 @@ export interface SystemService {
 	unit: ServiceUnit
 	unitTitleFa: string
 	basePriceRial: number
+	prices?: TariffPrices
 	description?: string
 	isActive: boolean
 }
@@ -372,6 +399,8 @@ export interface Invoice {
 	items: InvoiceItem[]
 	subtotalAmount: number
 	totalDiscount: number
+	companyDiscountPercentage?: number
+	companyDiscountAmount?: number
 	totalInsurance: number
 	totalTax: number // 10% VAT
 	finalPayableAmount: number

@@ -3,6 +3,7 @@ import { AppLayout } from '@/components/layout/app-layout'
 import { Card, CardHeader, CardTitle, CardContent } from '@/components/ui/card'
 import { Table, TableHeader, TableBody, TableRow, TableHead, TableCell } from '@/components/ui/table'
 import { Badge } from '@/components/ui/badge'
+import { IranPlateView } from '@/components/ui/iran-plate'
 import { MOCK_VEHICLES, MOCK_WAGONS } from '@/lib/mock-data/logistics-mock'
 import { toPersianDigits } from '@/lib/utils/formatters'
 import { IoCarSportOutline, IoTrainOutline } from 'react-icons/io5'
@@ -91,7 +92,9 @@ export default function FleetPage() {
 							<TableBody>
 								{MOCK_VEHICLES.map((v) => (
 									<TableRow key={v.id}>
-										<TableCell className="font-bold text-slate-900">{v.plateNumber}</TableCell>
+										<TableCell>
+											<IranPlateView plate={v.plateNumber} size="sm" />
+										</TableCell>
 										<TableCell>
 											{v.type === 'trailer' && 'تریلی ۱۸ چرخ'}
 											{v.type === 'truck' && 'کامیون ده چرخ'}

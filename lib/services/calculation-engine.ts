@@ -5,6 +5,7 @@ import {
 	SystemService,
 	CostCalculationResult,
 	ServiceUnit,
+	CargoType,
 } from '@/lib/types/logistics'
 import { MOCK_SERVICES, MOCK_TARIFF_RULES } from '@/lib/mock-data/logistics-mock'
 
@@ -13,6 +14,7 @@ export interface CalculationInput {
 	company: Company
 	activeContract?: Contract | null
 	quantity: number // تناژ، ساعت، روز، تعداد، واگن
+	cargoType?: CargoType
 	isDangerous?: boolean
 	isValuable?: boolean
 	estimatedCargoValueRial?: number
@@ -33,6 +35,7 @@ export function calculateServiceCost(input: CalculationInput): CostCalculationRe
 		isValuable = false,
 		estimatedCargoValueRial = 0,
 		durationHours = 1,
+		cargoType = isDangerous ? 'dangerous' : 'normal',
 	} = input
 
 	// 1. پیدا کردن خدمت در کاتالوگ
@@ -84,7 +87,12 @@ export function calculateServiceCost(input: CalculationInput): CostCalculationRe
 	}
 
 	// 4. ضریب کالای خطرناک (+30%) یا ارزشمند (+20%)
-	if (isDangerous) {
+	if (cargoType === 'heavy') {
+		appliedRate = appliedRate * 1.15
+		notes.push('افزایش ۱۵٪ به دلیل محموله سنگین')
+	}
+
+	if (cargoType === 'dangerous' || isDangerous) {
 		appliedRate = appliedRate * 1.3
 		notes.push('افزایش ۳۰٪ به دلیل محموله خطرناک')
 	}

@@ -8,6 +8,20 @@ export function toPersianDigits(n: number | string | undefined | null): string {
 }
 
 /**
+ * تبدیل اعداد فارسی و عربی به انگلیسی
+ */
+export function toEnglishDigits(str: string | undefined | null): string {
+	if (!str) return ''
+	const persianDigits = ['۰', '۱', '۲', '۳', '۴', '۵', '۶', '۷', '۸', '۹']
+	const arabicDigits = ['٠', '١', '٢', '٣', '٤', '٥', '٦', '٧', '٨', '٩']
+	let res = str.toString()
+	for (let i = 0; i < 10; i++) {
+		res = res.split(persianDigits[i]).join(i.toString()).split(arabicDigits[i]).join(i.toString())
+	}
+	return res
+}
+
+/**
  * فرمت‌بندی مبالغ ریالی با جداکننده سه رقمی و پسوند تومان / ریال
  */
 export function formatRial(amount: number | undefined | null, showUnit: boolean = true): string {

@@ -9,6 +9,7 @@ import { Modal } from '@/components/ui/modal'
 import { MOCK_COMPANIES } from '@/lib/mock-data/logistics-mock'
 import { Company, CompanyContact } from '@/lib/types/logistics'
 import { formatToman, toPersianDigits } from '@/lib/utils/formatters'
+import { getCompanyInvoiceDiscount, setCompanyInvoiceDiscount } from '@/lib/utils/company-discounts'
 import {
 	IoBusinessOutline,
 	IoSearchOutline,
@@ -25,6 +26,7 @@ export default function CompaniesPage() {
 	const [searchTerm, setSearchTerm] = useState('')
 	const [selectedCompany, setSelectedCompany] = useState<Company | null>(null)
 	const [isDetailModalOpen, setIsDetailModalOpen] = useState(false)
+	const [discountPercentage, setDiscountPercentage] = useState(0)
 
 	const filteredCompanies = companies.filter(
 		(c) =>
@@ -34,8 +36,24 @@ export default function CompaniesPage() {
 	)
 
 	const handleViewDetails = (company: Company) => {
-		setSelectedCompany(company)
+		const companyWithDiscount = {
+			...company,
+			invoiceDiscountPercentage: getCompanyInvoiceDiscount(company.id, company.invoiceDiscountPercentage || 0),
+		}
+		setSelectedCompany(companyWithDiscount)
+		setDiscountPercentage(companyWithDiscount.invoiceDiscountPercentage || 0)
 		setIsDetailModalOpen(true)
+	}
+
+	const handleSaveDiscount = () => {
+		if (!selectedCompany) return
+		const normalizedDiscount = Math.min(100, Math.max(0, discountPercentage || 0))
+		setCompanyInvoiceDiscount(selectedCompany.id, normalizedDiscount)
+		const updatedCompany = { ...selectedCompany, invoiceDiscountPercentage: normalizedDiscount }
+		setSelectedCompany(updatedCompany)
+		setCompanies((currentCompanies) =>
+			currentCompanies.map((company) => (company.id === updatedCompany.id ? updatedCompany : company))
+		)
 	}
 
 	return (
@@ -82,6 +100,7 @@ export default function CompaniesPage() {
 							<TableHead>نماینده اصلی</TableHead>
 							<TableHead>شماره تماس</TableHead>
 							<TableHead>تعداد قرارداد</TableHead>
+							<TableHead>تخفیف فاکتور</TableHead>
 							<TableHead>مانده حساب جاری</TableHead>
 							<TableHead>وضعیت</TableHead>
 							<TableHead>عملیات</TableHead>
@@ -112,6 +131,15 @@ export default function CompaniesPage() {
 									</TableCell>
 									<TableCell>{comp.phone}</TableCell>
 									<TableCell>{toPersianDigits(comp.contracts.length)} قرارداد</TableCell>
+									<TableCell>
+										{getCompanyInvoiceDiscount(comp.id, comp.invoiceDiscountPercentage || 0) > 0 ? (
+											<Badge variant="success">
+												{toPersianDigits(getCompanyInvoiceDiscount(comp.id, comp.invoiceDiscountPercentage || 0))}%
+											</Badge>
+										) : (
+											<span className="text-xs text-slate-400">بدون تخفیف</span>
+										)}
+									</TableCell>
 									<TableCell>
 										<span
 											className={`font-bold ${
@@ -156,6 +184,29 @@ export default function CompaniesPage() {
 					maxWidth="2xl"
 				>
 					<div className="space-y-6">
+						<div className="p-4 bg-emerald-50/60 border border-emerald-100 rounded-xl">
+							<div className="flex items-center justify-between gap-3 mb-3">
+								<div>
+									<h4 className="text-sm font-bold text-slate-800">تخفیف کلی فاکتور شرکت</h4>
+									<p className="text-[11px] text-slate-500 mt-1">این درصد هنگام صدور فاکتور روی کل مبلغ خدمات اعمال می‌شود.</p>
+								</div>
+								<span className="text-xs font-bold text-emerald-700">درصد</span>
+							</div>
+							<div className="flex items-end gap-2">
+								<Input
+									label="درصد تخفیف"
+									type="number"
+									min="0"
+									max="100"
+									value={discountPercentage}
+									onChange={(event) => setDiscountPercentage(Number(event.target.value))}
+								/>
+								<Button variant="filled" size="sm" onClick={handleSaveDiscount}>
+									ذخیره تخفیف
+								</Button>
+							</div>
+						</div>
+
 						{/* Overview Header */}
 						<div className="grid grid-cols-2 sm:grid-cols-4 gap-3 bg-slate-50 p-4 rounded-xl text-xs">
 							<div>

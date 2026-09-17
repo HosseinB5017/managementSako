@@ -7,7 +7,6 @@ import {
 	IoCarSportOutline,
 	IoCubeOutline,
 	IoConstructOutline,
-	IoPricetagsOutline,
 	IoDocumentTextOutline,
 	IoCardOutline,
 	IoStatsChartOutline,
@@ -19,6 +18,7 @@ import {
 	IoEnterOutline,
 	IoArrowForwardOutline,
 	IoLayersOutline,
+	IoPricetagsOutline,
 } from 'react-icons/io5'
 import { useAuth } from '@/lib/services/auth-context'
 import { cn } from '@/lib/utils/formatters'
@@ -55,22 +55,23 @@ const NAV_ITEMS: NavItem[] = [
 		title: 'ناوگان و وسایل نقلیه',
 		icon: <IoCarSportOutline className="w-5 h-5" />,
 		subItems: [
-			{ title: 'خودروهای سنگین و سبک', href: '/fleet/vehicles' },
-			{ title: 'واگن‌های باری ریلی', href: '/fleet/wagons' },
+			{ title: 'تریلی ترانزیت', href: '/fleet/wagons' },
 		],
 	},
 	{
 		title: 'تردد سایت (ورود/خروج)',
-		href: '/site-traffic',
 		icon: <IoEnterOutline className="w-5 h-5" />,
 		badge: 'لحظه‌ای',
+		subItems: [
+			{ title: 'لیست ترددهای سایت', href: '/site-traffic' },
+			{ title: 'ثبت ورود ناوگان و کالا', href: '/site-traffic/new' },
+		],
 	},
 	{
 		title: 'کالاها و محصولات',
 		icon: <IoCubeOutline className="w-5 h-5" />,
 		subItems: [
-			{ title: 'کاتالوگ کالاها', href: '/products' },
-			{ title: 'انبار ماشین (شماره شاسی‌ها)', href: '/products/vehicles' },
+			{ title: 'تعاریف و مشخصات کالا', href: '/products/definitions' },
 		],
 	},
 	{
@@ -93,12 +94,11 @@ const NAV_ITEMS: NavItem[] = [
 		],
 	},
 	{
-		title: 'خدمات و تعرفه‌گذاری',
+		title: 'تعرفه‌ها',
 		icon: <IoPricetagsOutline className="w-5 h-5" />,
 		subItems: [
-			{ title: 'کاتالوگ ۲۱ خدمت سامانه', href: '/services' },
-			{ title: 'تعرفه‌های پایه و نسخه‌ها', href: '/tariffs' },
-			{ title: 'ماشین‌حساب محاسبه هزینه', href: '/tariffs/calculator' },
+			{ title: 'فاکتور سریع', href: '/tariffs/calculator' },
+			{ title: 'خدمات', href: '/services' },
 		],
 	},
 	{
@@ -150,6 +150,7 @@ export const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
 		'شرکت‌ها و مشتریان': true,
 		'انبارداری و موجودی': true,
 		'عملیات سکو': true,
+		'تردد سایت (ورود/خروج)': true,
 	})
 
 	const toggleMenu = (title: string) => {
@@ -220,18 +221,21 @@ export const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
 									className={cn(
 										'flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium transition-colors',
 										active
-											? 'bg-blue-50 text-blue-700 font-bold'
-											: 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+											? 'bg-blue-600 text-white font-bold shadow-sm'
+											: 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
 									)}
 								>
 									<div className="flex items-center gap-3">
-										<span className={active ? 'text-blue-700' : 'text-slate-400'}>
-											{item.icon}
-										</span>
+										<span className={cn(active ? 'text-white' : 'text-slate-500')}>{item.icon}</span>
 										<span>{item.title}</span>
 									</div>
 									{item.badge && (
-										<span className="text-[10px] font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+										<span
+											className={cn(
+												'text-[10px] px-2 py-0.5 rounded-full font-bold',
+												active ? 'bg-white/20 text-white' : 'bg-blue-50 text-blue-700'
+											)}
+										>
 											{item.badge}
 										</span>
 									)}
@@ -244,30 +248,35 @@ export const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
 								<button
 									onClick={() => toggleMenu(item.title)}
 									className={cn(
-										'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium transition-colors',
+										'w-full flex items-center justify-between px-3.5 py-2.5 rounded-xl font-medium transition-colors cursor-pointer',
 										active
-											? 'text-blue-800 bg-blue-50/50 font-bold'
-											: 'text-slate-600 hover:bg-slate-50 hover:text-slate-900'
+											? 'text-blue-700 bg-blue-50/50 font-bold'
+											: 'text-slate-600 hover:text-slate-900 hover:bg-slate-50'
 									)}
 								>
 									<div className="flex items-center gap-3">
-										<span className={active ? 'text-blue-700' : 'text-slate-400'}>
-											{item.icon}
-										</span>
+										<span className={cn(active ? 'text-blue-700' : 'text-slate-500')}>{item.icon}</span>
 										<span>{item.title}</span>
 									</div>
-									<IoChevronDownOutline
-										className={cn(
-											'w-4 h-4 text-slate-400 transition-transform duration-200',
-											isExpanded ? 'rotate-180 text-blue-700' : ''
+									<div className="flex items-center gap-2">
+										{item.badge && (
+											<span className="text-[10px] px-2 py-0.5 rounded-full font-bold bg-blue-50 text-blue-700">
+												{item.badge}
+											</span>
 										)}
-									/>
+										{isExpanded ? (
+											<IoChevronDownOutline className="w-4 h-4 text-slate-400" />
+										) : (
+											<IoChevronBackOutline className="w-4 h-4 text-slate-400" />
+										)}
+									</div>
 								</button>
 
-								{isExpanded && hasSub && (
-									<div className="pr-8 pl-2 space-y-1 border-r-2 border-slate-100 mr-4">
-										{item.subItems!.map((sub) => {
-											const isSubActive = router.pathname === sub.href
+								{/* Sub Items */}
+								{isExpanded && item.subItems && (
+									<div className="pr-6 pl-2 space-y-1 border-r border-slate-100 mr-4">
+										{item.subItems.map((sub) => {
+											const subActive = router.pathname === sub.href
 											return (
 												<Link
 													key={sub.href}
@@ -277,9 +286,9 @@ export const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
 													}}
 													className={cn(
 														'block px-3 py-2 rounded-lg text-xs font-medium transition-colors',
-														isSubActive
+														subActive
 															? 'bg-blue-600 text-white font-bold shadow-xs'
-															: 'text-slate-500 hover:text-slate-900 hover:bg-slate-100'
+															: 'text-slate-500 hover:text-slate-900 hover:bg-slate-50'
 													)}
 												>
 													{sub.title}
@@ -293,19 +302,19 @@ export const Sidebar: React.FC<{ isOpen: boolean; onClose: () => void }> = ({
 					})}
 				</div>
 
-				{/* User Status Card */}
+				{/* Footer / User Profile */}
 				<div className="p-4 border-t border-slate-100 bg-slate-50/50">
 					<div className="flex items-center gap-3">
-						<div className="w-10 h-10 rounded-full bg-blue-100 text-blue-700 font-bold flex items-center justify-center text-sm border border-blue-200">
-							{currentUser.fullName.charAt(0)}
+						<div className="w-10 h-10 rounded-xl bg-slate-200 text-slate-700 flex items-center justify-center font-bold">
+							{currentUser.fullName.slice(0, 1)}
 						</div>
 						<div className="flex-1 min-w-0">
-							<p className="text-xs font-bold text-slate-800 truncate">{currentUser.fullName}</p>
+							<p className="text-xs font-bold text-slate-900 truncate">{currentUser.fullName}</p>
 							<p className="text-[11px] text-slate-500 truncate">
-								{currentUser.role === 'super_admin' && 'سوپر ادمین'}
+								{currentUser.role === 'super_admin' && 'مدیر ارشد سامانه'}
 								{currentUser.role === 'admin' && 'مدیر فنی'}
-								{currentUser.role === 'manager' && 'مدیر ناظر'}
-								{currentUser.role === 'operator' && 'اپراتور عملیات'}
+								{currentUser.role === 'manager' && 'مدیر بازرگانی'}
+								{currentUser.role === 'operator' && 'اپراتور شیفت سکو'}
 							</p>
 						</div>
 					</div>

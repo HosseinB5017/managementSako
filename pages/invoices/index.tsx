@@ -9,6 +9,7 @@ import { Modal } from '@/components/ui/modal'
 import { MOCK_INVOICES, MOCK_COMPANIES, MOCK_SERVICES } from '@/lib/mock-data/logistics-mock'
 import { Invoice } from '@/lib/types/logistics'
 import { formatToman, formatRial, toPersianDigits, getPersianTodayDate } from '@/lib/utils/formatters'
+import { getCompanyInvoiceDiscount } from '@/lib/utils/company-discounts'
 import {
 	IoDocumentTextOutline,
 	IoAddOutline,
@@ -32,6 +33,16 @@ export default function InvoicesPage() {
 	const handleCreateConsolidatedInvoice = (e: React.FormEvent) => {
 		e.preventDefault()
 		const company = MOCK_COMPANIES.find((c) => c.id === selectedCompanyId)!
+		const companyDiscountPercentage = getCompanyInvoiceDiscount(company.id, company.invoiceDiscountPercentage || 0)
+		const subtotalAmount = 165000000
+		const existingItemDiscount = 13500000
+		const companyDiscountAmount = Math.round((subtotalAmount * companyDiscountPercentage) / 100)
+		const totalDiscount = existingItemDiscount + companyDiscountAmount
+		const firstItemCompanyDiscount = Math.round((companyDiscountAmount * 135000000) / subtotalAmount)
+		const secondItemCompanyDiscount = companyDiscountAmount - firstItemCompanyDiscount
+		const totalInsurance = 5000000
+		const totalTax = 15650000
+		const finalPayableAmount = subtotalAmount - totalDiscount + totalInsurance + totalTax
 
 		const newInvoice: Invoice = {
 			id: `invc_${Date.now()}`,
@@ -53,10 +64,10 @@ export default function InvoicesPage() {
 					quantity: 3,
 					unitTitle: 'عملیات',
 					unitPrice: 45000000,
-					discountAmount: 13500000,
+					discountAmount: 13500000 + firstItemCompanyDiscount,
 					insuranceAmount: 2000000,
 					taxAmount: 12350000,
-					finalTotal: 135850000,
+					finalTotal: 135000000 - 13500000 - firstItemCompanyDiscount + 2000000 + 12350000,
 				},
 				{
 					id: `item_2`,
@@ -66,19 +77,21 @@ export default function InvoicesPage() {
 					quantity: 1200,
 					unitTitle: 'تن/ساعت',
 					unitPrice: 25000,
-					discountAmount: 0,
+					discountAmount: secondItemCompanyDiscount,
 					insuranceAmount: 3000000,
 					taxAmount: 3300000,
-					finalTotal: 36300000,
+					finalTotal: 30000000 - secondItemCompanyDiscount + 3000000 + 3300000,
 				},
 			],
-			subtotalAmount: 165000000,
-			totalDiscount: 13500000,
-			totalInsurance: 5000000,
-			totalTax: 15650000,
-			finalPayableAmount: 172150000,
+			subtotalAmount,
+			totalDiscount,
+			companyDiscountPercentage,
+			companyDiscountAmount,
+			totalInsurance,
+			totalTax,
+			finalPayableAmount,
 			paidAmount: 0,
-			remainingAmount: 172150000,
+			remainingAmount: finalPayableAmount,
 			notes: 'فاکتور تجمیعی کلیه خدمات ارائه شده در دوره شهریور ماه',
 		}
 
@@ -194,10 +207,11 @@ export default function InvoicesPage() {
 						<div className="p-6 border-2 border-slate-200 rounded-2xl bg-white space-y-6">
 							{/* Official Header */}
 							<div className="flex justify-between items-start border-b-2 border-slate-900 pb-4">
-								<div>
-									<h2 className="text-lg font-black text-slate-900">صورتحساب خدمات سکوی لجستیک و انبارداری</h2>
-									<p className="text-xs text-slate-500 mt-1">سامانه جامع خدمات بارانداز، ریلی و انبار</p>
+								<div className="flex items-center gap-2">
+									<img src="/rail-gostar-logo.svg" alt="لوگوی ریل گستر" className="w-16 h-16 object-contain" />
+									<div><h2 className="text-lg font-black text-slate-900">ریل گستر لجستیک راه آسیا</h2><p className="text-xs text-slate-500 mt-1">سامانه مدیریت و خدمات لجستیک ریلی</p><p className="text-[10px] text-slate-500">ریل گستر</p></div>
 								</div>
+								<div className="text-center font-black text-sm">پیش‌فاکتور فروش و خدمات<br /><span className="text-[10px] font-normal">نسخه فوری - صدور مستقیم</span></div>
 								<div className="text-left text-xs space-y-1">
 									<p>
 										<span className="text-slate-400">شماره: </span>
@@ -265,8 +279,14 @@ export default function InvoicesPage() {
 									</div>
 									<div className="flex justify-between text-emerald-700">
 										<span>تخفیف ویژه قرارداد:</span>
-										<span>-{formatRial(selectedInvoice.totalDiscount)}</span>
+										<span>-{formatRial(selectedInvoice.totalDiscount - (selectedInvoice.companyDiscountAmount || 0))}</span>
 									</div>
+									{(selectedInvoice.companyDiscountAmount || 0) > 0 && (
+										<div className="flex justify-between text-emerald-700">
+											<span>تخفیف کلی شرکت ({toPersianDigits(selectedInvoice.companyDiscountPercentage || 0)}٪):</span>
+											<span>-{formatRial(selectedInvoice.companyDiscountAmount || 0)}</span>
+										</div>
+									)}
 									<div className="flex justify-between">
 										<span className="text-slate-500">هزینه بیمه و پوشش:</span>
 										<span>{formatRial(selectedInvoice.totalInsurance)}</span>

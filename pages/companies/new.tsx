@@ -17,6 +17,7 @@ export default function NewCompanyPage() {
 	const [contactName, setContactName] = useState('')
 	const [contactMobile, setContactMobile] = useState('')
 	const [contactPosition, setContactPosition] = useState('مدیر بازرگانی')
+	const [invoiceDiscountPercentage, setInvoiceDiscountPercentage] = useState(0)
 
 	const handleSubmit = (e: React.FormEvent) => {
 		e.preventDefault()
@@ -114,6 +115,25 @@ export default function NewCompanyPage() {
 								value={contactPosition}
 								onChange={(e) => setContactPosition(e.target.value)}
 							/>
+						</div>
+					</div>
+
+					<div>
+						<h3 className="text-sm font-bold text-slate-800 mb-3 border-b border-slate-100 pb-2">
+							تنظیمات مالی شرکت
+						</h3>
+						<div className="max-w-xs">
+							<Input
+								label="تخفیف روی کل فاکتور (درصد)"
+								type="number"
+								min="0"
+								max="100"
+								value={invoiceDiscountPercentage}
+								onChange={(e) => setInvoiceDiscountPercentage(Math.min(100, Math.max(0, Number(e.target.value))))}
+							/>
+							<p className="text-[11px] text-slate-500 mt-1.5">
+								این تخفیف هنگام صدور فاکتور تجمیعی از کل مبلغ خدمات کم می‌شود.
+							</p>
 						</div>
 					</div>
 
